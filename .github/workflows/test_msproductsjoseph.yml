@@ -1,17 +1,25 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy JAR app to Azure Web App - msproductsjoseph
+name: Build and deploy JAR app to Azure Web App - ms-products-maovares
 
 on:
   push:
     branches:
-      - test
+      - dev
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    environment: dev
+
+    env:  # Variables para todo el job
+      SPRING_PROFILES_ACTIVE: dev
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      MONGO_DB: ${{ vars.MONGO_DB }}
+
     permissions:
       contents: read #This is required for actions/checkout
 
@@ -26,6 +34,10 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean install
+        env:
+          SPRING_PROFILES_ACTIVE: dev
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          MONGO_DB: ${{ vars.MONGO_DB }}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -49,15 +61,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_845B4A3B6DE6463A9078B7B486856968 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_02AB19D060B2478A816153E8CCE8D9DA }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B0166E3073304D50BA9DF6B5C2BC92F0 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_01592CE2115248778347EFA2154FFDD6 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_694849A91BD440AB92A99BF75E4948C4 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8C17BFF96E334C7593D58B0349670772 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'msproductsjoseph'
+          app-name: 'ms-products-maovares'
           slot-name: 'Production'
           package: '*.jar'
           
